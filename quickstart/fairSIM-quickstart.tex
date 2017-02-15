@@ -404,7 +404,12 @@ file access and routines for easy multi-threading.
 The modular layout allows one to easily reuse fairSIMs components.
 Especially low- and high-level functionality of \verb+sim_algorithm+ can be
 used from scripts, without resorting to the GUI. The git repository includes
-an example file, in which a complete reconstruction sequence (setup, coarse and fine
+an example file\footnote{
+See \url{https://github.com/fairSIM/fairSIM/blob/v1.0.2/org/fairsim/fiji/TestPlugin.java}
+for the complete algorithm and 
+\url{https://github.com/fairSIM/fairSIM/blob/v1.0.2/org/fairsim/sim_algorithm/SimAlgorithm.java}
+for ready-to-use high level functions.}
+, in which a complete reconstruction sequence (setup, coarse and fine
 parameter estimation, reconstruction) is run. This file is commented, and
 should be easy to adapt to e.g. automatize batch data processing.
 
