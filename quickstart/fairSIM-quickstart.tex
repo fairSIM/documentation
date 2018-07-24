@@ -7,6 +7,8 @@
 
 \usepackage{wrapfig}
 
+\newcommand{\devmarker}{\textit{(development version) }}
+
 % ========================================================================================
 % document defintions
 
@@ -24,7 +26,11 @@
 \abstract{This manual provides a short,
 step-by-step guide on running a SIM reconstruction by
 fairSIM, parameter-setting and trouble-shooting tips,
-and a description of our test dataset.}
+and a description of our test dataset.
+\textbf{Update:} Some features marked \devmarker are only
+available when using the current development release of
+fairSIM, not the originally published version of our code.
+}
 
 \tableofcontents
 \newpage
@@ -82,6 +88,22 @@ After a successful import, the image selector shows the currently
 imported image name in green. Additionally, a window displays
 the raw input data from the selected slice. For 3-beam illumination,
 the coarse pattern should clearly be visible on these images.
+\item \textbf{1b - Select time-lapse reconstruction} \devmarker
+In the "Image selector" field, a second "Timelapse" tab allows for reconstructing
+time series of SIM images semi-automatically. The "z-slices" input has
+to be set to the number of slices acquired for every time-step, the total
+number of time-points is determined automatically. Once a reconstruction
+has been completed for one time-step, batch reconstruction and an
+automatically updated reconstruction result (recomputed when moving the time slides)
+becomes available.
+\item \textbf{1c - Image Corrections} \devmarker
+The third "Correction" tab allows for a basic (global) correction of varying
+intensities between different SIM angles and phases. Variations are estimated
+by comparing either averages or medians of the raw images. Large variations
+should be cross-checked, as they point to problems in either instrument alignment
+or sample properties (check with a known-good sample, e.g. a bead slice, when in doubt).
+
+
 \item \textbf{2 - Load or approximate the OTF}. An optical transfer function
 can either be loaded from file
 \footnote{OMX OTF files can be converted to our format with a 
@@ -112,6 +134,17 @@ a new window shows the reconstruction result, and the wide-field
 image (with and without Wiener-filtering) for comparison.
 Parameters (Wiener filter, apodization cutoff) can be defined in
 \emph{setup}.
+
+In the \devmarker Richardson-Lucy (RL) filtering following \cite{perez2016optimal} is available. The type of filtering used and
+the iteration count can be accessed via "setup".
+
+The \devmarker version also allows to influence the shape 
+of the apotization function $A(k)$ via the "APO bend" parameter $b$. Here
+$1.0$ corresponds to a triangular shape, lower numbers push
+medium frequency response (roughly as $A(k) = (1-k)^b$ 
+with $k=0\dots1$).
+
+
 \end{itemize}
 
 
@@ -332,6 +365,36 @@ so the attenuation has less effect
 \end{itemize}
 \end{itemize}
 
+\subsection{Importing or estimating the OTF}
+
+An experimentally determined OTF is preferred. For users of the OMX microscopes, a converter tool is available to extract 2D OTFs from the OTF calibration data provided by the system. For other systems,
+a SIM OTF generation tool is in development.
+
+\vspace{1em}
+
+\begin{minipage}[t]{.48\linewidth}
+Alternatively, a rough OTF estimate can be provided by fairSIM.
+This requires setting the NA and emission wavelength of the 
+sample (keep in mind the NA might be reduced due to the
+ immersion medium), and allows for setting a "dampening" parameter
+$a$ to shift the medium frequency response of the OTF estimation.
+The lower $a$ is set, the more medium frequencies are assumed to
+be dampened by the optical system. For the example data published
+from the OMX system, $a$ has been determined to have a usable 
+range of $0.3$ to $0.5$.
+\end{minipage}%\hfill
+\begin{minipage}[t]{.49\linewidth}
+\raisebox{-4cm}{
+\includegraphics[width=.88\textwidth]{../figures/otf-plot1.pdf}
+}
+\end{minipage}
+
+
+
+
+
+
+
 \subsection{Setting the amount of intermediate output}
 
 Both the parameter estimation and the reconstruction step can output
@@ -426,7 +489,7 @@ the provided makefile.
 
 
 
-\begin{figure}[H]
+\begin{figure}[ht]
 \begin{center}
 \includegraphics[width=.7\textwidth]{../figures/SketchCodeDiagramm}
 \end{center}
